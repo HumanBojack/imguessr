@@ -8,8 +8,6 @@ COPY . .
 
 RUN go mod download
 
-RUN air init
-
-CMD ["air"]
+CMD ["air", "-c", "air.toml"]
 
 # docker build -f Dockerfile_dev -t imguessr-dev . && docker run -p 8080:8080 -v "${PWD}:/app" imguessr-dev

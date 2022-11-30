@@ -6,8 +6,7 @@ COPY . .
 
 ARG CGO_ENABLED=0
 
-RUN go build -o imguessr .
-
+RUN go build -o imguessr ./cmd/api
 
 FROM scratch
 
