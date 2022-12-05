@@ -5,14 +5,10 @@ import (
 	"imguessr/pkg/db"
 	ihttp "imguessr/pkg/http"
 	"imguessr/pkg/service"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func getHello(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, "Hello World!")
-}
 
 func main() {
 	r := gin.Default()
@@ -24,7 +20,7 @@ func main() {
 	}
 
 	s := service.NewUserSvc(db)
-	h := ihttp.NewUserHandler(s)
+	h := ihttp.NewHandler(s)
 
 	ihttp.GetRoutes(r, h)
 
