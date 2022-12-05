@@ -10,5 +10,6 @@ func GetRoutes(r *gin.Engine, h *Handler) {
 func addUserRoutes(rg *gin.RouterGroup, h *Handler) {
 	user := rg.Group("/user")
 
-	user.GET("/", h.GetUser)
+	user.GET("/:id", h.UserHandler.Get)
+	user.POST("/", h.UserHandler.Create)
 }

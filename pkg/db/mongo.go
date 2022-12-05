@@ -4,13 +4,14 @@ import (
 	"context"
 	"imguessr/pkg/domain"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type mongoStore struct {
-	Client *mongo.Client
+	Client         *mongo.Client
+	UserCollection *mongo.Collection
 }
 
 func NewMongoStore() (domain.UserDB, error) {
@@ -19,31 +20,28 @@ func NewMongoStore() (domain.UserDB, error) {
 	if err != nil {
 		return nil, err
 	}
-	return mongoStore{Client: client}, nil
-}
-
-func (ms mongoStore) Get(id primitive.ObjectID) (*domain.User, error) {
-	return &domain.User{
-		Name: "Jean Ballon",
-		Password: "balloche",
+	return mongoStore{
+		Client:         client,
+		UserCollection: client.Database("main").Collection("users"),
 	}, nil
 }
 
-// func Seed(c *mongo.Collection, ctx context.Context) {
-// 	user := User{
-// 		Name:     "J(a)son",
-// 		Password: "mdpdefou1234",
-// 	}
+func (ms mongoStore) Get(id string) (*domain.User, error) {
+	result := ms.UserCollection.FindOne(context.TODO(), bson.M{"_id": id})
 
-// 	_, err := c.InsertOne(ctx, user)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return
-// 	}
+	var user domain.User
+	err := result.Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+	
+	return &user, nil
+}
 
-// 	var users []User
-// 	cur, _ := c.Find(ctx, bson.D{})
-// 	cur.All(ctx, &users)
-
-// 	fmt.Println(users)
-// }
+func (ms mongoStore) Create(u *domain.User) error {
+	_, err := ms.UserCollection.InsertOne(context.TODO(), u)
+	if err != nil {
+		return err
+	}
+	return nil
+}

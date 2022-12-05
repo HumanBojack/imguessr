@@ -1,19 +1,17 @@
 package domain
 
-import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
-
 type User struct {
-	ID       primitive.ObjectID `bson:"_id,omitempty" json:"_id"`
-	Name     string             `bson:"name,omitempty" json:"name"`
-	Password string             `bson:"password,omitempty" json:"password"`
+	ID       string `bson:"_id,omitempty" json:"_id"`
+	Name     string `bson:"name" binding:"required" json:"name"`
+	Password string `bson:"password" binding:"required" json:"password"`
 }
 
 type UserDB interface {
-	Get(id primitive.ObjectID) (*User, error)
+	Get(id string) (*User, error)
+	Create(user *User) error
 }
 
 type UserSvc interface {
-	Get(id primitive.ObjectID) (*User, error)
+	Get(id string) (*User, error)
+	Create(user *User) error
 }
