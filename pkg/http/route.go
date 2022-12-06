@@ -12,4 +12,6 @@ func addUserRoutes(rg *gin.RouterGroup, h *Handler) {
 
 	user.GET("/:id", h.UserHandler.Get)
 	user.POST("/", h.UserHandler.Create)
+	user.PUT("/:id", h.UserHandler.Update)
+	user.DELETE("/:id", h.UserHandler.Delete)
 }

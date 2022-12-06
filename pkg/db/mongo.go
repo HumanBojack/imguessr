@@ -34,7 +34,7 @@ func (ms mongoStore) Get(id string) (*domain.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &user, nil
 }
 
@@ -44,4 +44,28 @@ func (ms mongoStore) Create(u *domain.User) error {
 		return err
 	}
 	return nil
+}
+
+func (ms mongoStore) Update(u *domain.User) error {
+	filter := bson.M{"_id": u.ID}
+
+	_, err := ms.UserCollection.ReplaceOne(
+		context.TODO(),
+		filter,
+		u,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ms mongoStore) Delete(id string) error {
+	filter := bson.M{"_id": id}
+	_, err := ms.UserCollection.DeleteOne(
+		context.TODO(),
+		filter,
+	)
+	return err
 }

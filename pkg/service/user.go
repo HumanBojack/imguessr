@@ -24,3 +24,14 @@ func (us userSvc) Create(u *domain.User) error {
 	u.ID = uuid.New().String()
 	return us.DB.Create(u)
 }
+
+func (us userSvc) Update(u *domain.User) error {
+	// TODO: sanity check (email, password...)
+	err := us.DB.Update(u)
+	return err
+}
+
+func (us userSvc) Delete(id string) error {
+	err := us.DB.Delete(id)
+	return err
+}
