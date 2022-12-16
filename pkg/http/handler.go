@@ -95,15 +95,15 @@ func (h *UserHandler) Update(c *gin.Context) {
 }
 
 func (h *UserHandler) Delete(c *gin.Context) {
-		// Get the user at the given id
-		id := c.Param("id")
+	// Get the user at the given id
+	id := c.Param("id")
 
-		err := h.UserSvc.Delete(id)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-		}
+	err := h.UserSvc.Delete(id)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"error": err.Error(),
+		})
+	}
 
-		c.Status(http.StatusNoContent)
+	c.Status(http.StatusNoContent)
 }
