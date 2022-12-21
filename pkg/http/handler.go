@@ -90,6 +90,11 @@ func (h *UserHandler) Update(c *gin.Context) {
 
 	// Save the modified user
 	err = h.UserSvc.Update(user)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+	}
 
 	c.JSON(http.StatusOK, user)
 }
