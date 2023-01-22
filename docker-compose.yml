@@ -3,15 +3,12 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile_dev
     depends_on:
       - mongo
     environment:
       - DATABASE_URL=mongodb://mongo:27017
     ports:
       - "8080:8080"
-    volumes:
-      - "${PWD}:/app"
   mongo:
     image: mongo:latest
     restart: always

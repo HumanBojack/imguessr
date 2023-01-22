@@ -1,0 +1,7 @@
+services:
+  api:
+    build:
+        dockerfile: Dockerfile_dev
+    volumes:
+      - "${PWD}:/app"
+    command: "air -c air.toml"
