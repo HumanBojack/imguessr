@@ -11,6 +11,7 @@ type UpdateUser struct {
 }
 
 type UserDB interface {
+	GetAll() ([]*User, error)
 	Get(id string) (*User, error)
 	Create(user *User) error
 	Update(u *User) error
@@ -18,6 +19,7 @@ type UserDB interface {
 }
 
 type UserSvc interface {
+	GetAll() ([]*User, error)
 	Get(id string) (*User, error)
 	Create(user *User) error
 	Update(u *User) error

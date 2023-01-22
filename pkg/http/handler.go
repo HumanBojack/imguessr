@@ -24,6 +24,18 @@ func NewHandler(userSvc domain.UserSvc) *Handler {
 	}
 }
 
+func (h *UserHandler) GetAll(c *gin.Context) {
+	userList, err := h.UserSvc.GetAll()
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, userList)
+}
+
 func (h *UserHandler) Get(c *gin.Context) {
 	id := c.Param("id")
 

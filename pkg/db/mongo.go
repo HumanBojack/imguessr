@@ -26,6 +26,27 @@ func NewMongoStore() (domain.UserDB, error) {
 	}, nil
 }
 
+func (ms mongoStore) GetAll() ([]*domain.User, error) {
+	cur, err := ms.UserCollection.Find(context.TODO(), bson.D{})
+	if err != nil {
+		return nil, err
+	}
+	defer cur.Close(context.TODO())
+
+	var userList = []*domain.User{}
+	for cur.Next(context.TODO()) {
+		var elem domain.User
+		err := cur.Decode(&elem)
+		if err != nil {
+			return nil, err
+		}
+
+		userList = append(userList, &elem)
+	}
+
+	return userList, nil
+}
+
 func (ms mongoStore) Get(id string) (*domain.User, error) {
 	result := ms.UserCollection.FindOne(context.TODO(), bson.M{"_id": id})
 

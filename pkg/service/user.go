@@ -16,6 +16,10 @@ func NewUserSvc(db domain.UserDB) domain.UserSvc {
 	}
 }
 
+func (us userSvc) GetAll() ([]*domain.User, error) {
+	return us.DB.GetAll()
+}
+
 func (us userSvc) Get(id string) (*domain.User, error) {
 	return us.DB.Get(id)
 }
