@@ -11,6 +11,6 @@ services:
       - "8080:8080"
   mongo:
     image: mongo:latest
-    restart: always
+    restart: unless-stopped
     ports:
       - "27017:27017"
