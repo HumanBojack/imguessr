@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"imguessr/pkg/domain"
+	"os"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,15 +16,27 @@ type mongoStore struct {
 }
 
 func NewMongoStore() (domain.UserDB, error) {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://mongo"))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("DATABASE_URL")))
 	// ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	if err != nil {
 		return nil, err
 	}
-	return mongoStore{
+	ms := mongoStore{
 		Client:         client,
 		UserCollection: client.Database("main").Collection("users"),
-	}, nil
+	}
+
+	// Create a unique index on the name field.
+	indexModel := mongo.IndexModel{
+		Keys:    bson.M{"updateuser.name": 1},
+		Options: options.Index().SetUnique(true),
+	}
+	_, err = ms.UserCollection.Indexes().CreateOne(context.TODO(), indexModel)
+	if err != nil {
+		return nil, err
+	}
+
+	return ms, nil
 }
 
 func (ms mongoStore) GetAll() ([]*domain.User, error) {

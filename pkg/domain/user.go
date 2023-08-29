@@ -5,8 +5,9 @@ type User struct {
 	UpdateUser
 }
 
+// TODO: forbid duplicate email
 type UpdateUser struct {
-	Name     string `bson:"name" binding:"required" json:"name"`
+	Name     string `bson:"name" binding:"required" json:"name" unique:"true"`
 	Password string `bson:"password" binding:"required" json:"password"`
 }
 
