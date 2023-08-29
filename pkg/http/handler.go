@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Handler struct {
@@ -55,6 +56,7 @@ func (h *UserHandler) Get(c *gin.Context) {
 }
 
 func (h *UserHandler) Create(c *gin.Context) {
+	// Get the email and the password from the body
 	var newUser domain.User
 
 	if err := c.BindJSON(&newUser); err != nil {
@@ -64,7 +66,18 @@ func (h *UserHandler) Create(c *gin.Context) {
 		return
 	}
 
-	err := h.UserSvc.Create(&newUser)
+	// Hash the password and create the User
+	hash, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 10)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	newUser.Password = string(hash)
+
+	err = h.UserSvc.Create(&newUser)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
