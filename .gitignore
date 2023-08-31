@@ -22,3 +22,6 @@ go.work
 
 # App build folder for air
 tmp/
+
+# Environment file
+.env
