@@ -72,6 +72,17 @@ func authorizeAdmin() gin.HandlerFunc {
 	}
 }
 
+func checkIsAdmin(c *gin.Context) bool {
+	// Get the admin variable from the Gin context
+	isAdmin, ok := c.Get("isAdmin")
+	if !ok {
+		return false
+	}
+
+	// Check if the user is an admin
+	return isAdmin.(bool)
+}
+
 func (h *AuthHandler) Login(c *gin.Context) {
 	// Get login and password from the body
 	var login domain.UpdateUser
