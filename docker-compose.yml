@@ -7,6 +7,8 @@ services:
       - mongo
     environment:
       - DATABASE_URL=mongodb://mongo:27017
+    env_file:
+      - .env
     ports:
       - "8080:8080"
   mongo:

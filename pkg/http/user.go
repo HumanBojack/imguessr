@@ -54,6 +54,13 @@ func (h *UserHandler) Create(c *gin.Context) {
 		return
 	}
 
+	// Check if the request has been made by an admin
+	isAdmin := checkIsAdmin(c)
+	// Set the isAdmin field of the user to false if the request has not been made by an admin
+	if !isAdmin {
+		newUser.IsAdmin = false
+	}
+
 	// Hash the password and create the User
 	hash, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 10)
 	if err != nil {
@@ -80,6 +87,17 @@ func (h *UserHandler) Update(c *gin.Context) {
 	// Get the user at the given id
 	id := c.Param("id")
 
+	// Check if the current user is the same as the one to update or if the current user is an admin
+	currentUser := c.GetString("userID")
+	isAdmin := checkIsAdmin(c)
+
+	if currentUser != id && !isAdmin {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
 	userId, err := uuid.Parse(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, "Not valid UUID")
@@ -101,6 +119,11 @@ func (h *UserHandler) Update(c *gin.Context) {
 		return
 	}
 
+	// Set the isAdmin field of the user to false if the request has not been made by an admin
+	if !isAdmin {
+		user.UpdateUser.IsAdmin = false
+	}
+
 	// Save the modified user
 	err = h.UserSvc.Update(user)
 	if err != nil {
@@ -115,6 +138,17 @@ func (h *UserHandler) Update(c *gin.Context) {
 func (h *UserHandler) Delete(c *gin.Context) {
 	// Get the user at the given id
 	id := c.Param("id")
+
+	// Check if the current user is the same as the one to delete or if the current user is an admin
+	currentUser := c.GetString("userID")
+	isAdmin := checkIsAdmin(c)
+
+	if currentUser != id && !isAdmin {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
 
 	err := h.UserSvc.Delete(id)
 	if err != nil {
