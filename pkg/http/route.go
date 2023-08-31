@@ -12,7 +12,7 @@ func addUserRoutes(rg *gin.RouterGroup, h *Handler) {
 	user := rg.Group("/user")
 	user.Use(authMiddleware())
 
-	user.GET("/", h.UserHandler.GetAll)
+	user.GET("/", authorizeAdmin(), h.UserHandler.GetAll)
 	user.GET("/:id", h.UserHandler.Get)
 	user.POST("/", h.UserHandler.Create)
 	user.PUT("/:id", h.UserHandler.Update)

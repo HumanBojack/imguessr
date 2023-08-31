@@ -53,6 +53,25 @@ func authMiddleware() gin.HandlerFunc {
 	}
 }
 
+func authorizeAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Get the admin variable from the Gin context
+		isAdmin, ok := c.Get("isAdmin")
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "isAdmin not found in Gin context"})
+			return
+		}
+
+		// Check if the user is an admin
+		if !isAdmin.(bool) {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Unauthorized"})
+			return
+		}
+
+		c.Next()
+	}
+}
+
 func (h *AuthHandler) Login(c *gin.Context) {
 	// Get login and password from the body
 	var login domain.UpdateUser
