@@ -1,16 +1,56 @@
 package http
 
 import (
+	"fmt"
 	"imguessr/pkg/domain"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthHandler struct {
 	AuthSvc domain.AuthSvc
 	UserSvc domain.UserSvc
+}
+
+func authMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Get the JWT token from the "Authorization" header
+		authHeader := c.GetHeader("Authorization")
+		if authHeader == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+			return
+		}
+		tokenString := authHeader[len("Bearer "):]
+
+		// Validate the JWT token
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+			return []byte(os.Getenv("JWT_SECRET")), nil
+		})
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+		if _, ok := token.Claims.(jwt.MapClaims); !ok || !token.Valid {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			return
+		}
+
+		// Set the user ID and isAdmin in the Gin context
+		claims := token.Claims.(jwt.MapClaims)
+		userID := claims["id"].(string)
+		c.Set("userID", userID)
+		isAdmin := claims["isAdmin"].(bool)
+		c.Set("isAdmin", isAdmin)
+
+		c.Next()
+	}
 }
 
 func (h *AuthHandler) Login(c *gin.Context) {
