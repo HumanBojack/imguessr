@@ -18,8 +18,10 @@ func main() {
 		return
 	}
 
-	s := service.NewUserSvc(db)
-	h := ihttp.NewHandler(s)
+	uSvc := service.NewUserSvc(db)
+	aSvc := service.NewAuthSvc()
+
+	h := ihttp.NewHandler(uSvc, aSvc)
 
 	ihttp.GetRoutes(r, h)
 
