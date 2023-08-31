@@ -72,6 +72,20 @@ func (ms mongoStore) Get(id string) (*domain.User, error) {
 	return &user, nil
 }
 
+func (ms mongoStore) GetByName(name string) (*domain.User, error) {
+	result := ms.UserCollection.FindOne(context.TODO(), bson.M{
+		"updateuser.name": name,
+	})
+
+	var user domain.User
+	err := result.Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func (ms mongoStore) Create(u *domain.User) error {
 	_, err := ms.UserCollection.InsertOne(context.TODO(), u)
 	if err != nil {
