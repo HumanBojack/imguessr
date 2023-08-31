@@ -9,6 +9,7 @@ type User struct {
 type UpdateUser struct {
 	Name     string `bson:"name" binding:"required" json:"name" unique:"true"`
 	Password string `bson:"password" binding:"required" json:"password"`
+	IsAdmin  bool   `bson:"isAdmin" json:"isAdmin"`
 }
 
 type UserDB interface {
