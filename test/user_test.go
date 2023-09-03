@@ -172,13 +172,15 @@ func TestUpdateUser(t *testing.T) {
 		// Test as user, promoting itself to admin
 		{"39c71853-6206-4eef-9f5b-7a1a90830ccc", `{"isAdmin":true}`, http.StatusOK, `"isAdmin":false`, userToken},
 		// Test as user, changing password
-		{"39c71853-6206-4eef-9f5b-7a1a90830ccc", `{"password":"newPwd"}`, http.StatusOK, `"password":"newPwd"`, userToken},
+		{"39c71853-6206-4eef-9f5b-7a1a90830ccc", `{"password":"$2y$10$/bWLJytUWkDIVYJsZTvg4O6.fTtBjDw9BOx50YSER2Iqo0dEGc2Be"}`, http.StatusOK, `"password":"$2y$10$/bWLJytUWkDIVYJsZTvg4O6.fTtBjDw9BOx50YSER2Iqo0dEGc2Be"`, userToken},
 		// Test as user, changing another user
 		{"ec4e2897-4ca4-4694-94d7-96db81ec223f", `{"password":"newPwd"}`, http.StatusUnauthorized, `Unauthorized`, userToken},
 		// Test as admin, changing password
-		{"ec4e2897-4ca4-4694-94d7-96db81ec223f", `{"password":"newPwd"}`, http.StatusOK, `"password":"newPwd"`, adminToken},
+		{"ec4e2897-4ca4-4694-94d7-96db81ec223f", `{"password":"$2y$10$/bWLJytUWkDIVYJsZTvg4O6.fTtBjDw9BOx50YSER2Iqo0dEGc2Be"}`, http.StatusOK, `"password":"$2y$10$/bWLJytUWkDIVYJsZTvg4O6.fTtBjDw9BOx50YSER2Iqo0dEGc2Be"`, adminToken},
 		// Test as admin, promoting another user to admin
 		{"39c71853-6206-4eef-9f5b-7a1a90830ccc", `{"isAdmin":true}`, http.StatusOK, `"isAdmin":true`, adminToken},
+		// Test as admin, downgrading another admin to user
+		{"39c71853-6206-4eef-9f5b-7a1a90830ccc", `{"isAdmin":false}`, http.StatusOK, `"isAdmin":false`, adminToken},
 	}
 
 	for _, r := range requests {
