@@ -123,7 +123,7 @@ func TestCreateUser(t *testing.T) {
 		{`{"name":"test-na-a", "password":"test", "isAdmin":true}`, http.StatusOK, `"isAdmin":false`, userToken},
 		// Test as admin creating a non-admin user
 		{`{"name":"test-a-na", "password":"test", "isAdmin":false}`, http.StatusOK, `"isAdmin":false`, adminToken},
-		// // Test as admin creating an admin user
+		// Test as admin creating an admin user
 		{`{"name":"test-a-a", "password":"test", "isAdmin":true}`, http.StatusOK, `"isAdmin":true`, adminToken},
 	}
 
