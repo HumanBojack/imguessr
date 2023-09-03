@@ -95,3 +95,53 @@ func TestGetAllUsers(t *testing.T) {
 		checkResponse(t, w, r.wantedCode, r.bodyIncl)
 	}
 }
+
+// Test the CreateUser function as an admin and non-admin
+// Test if a user created by a non-admin is not an admin
+func TestCreateUser(t *testing.T) {
+	// Get the auth token for the user
+	userToken := getAndParseToken(t, `{"name":"testLogin","password":"test1"}`)
+	t.Logf("User token : %v", userToken)
+	// Get the auth token for the admin
+	adminToken := getAndParseToken(t, `{"name":"testAdmin","password":"test1"}`)
+	t.Logf("Admin token : %v", adminToken)
+
+	// Set the different requests to test
+	requests := []struct {
+		body       string
+		wantedCode int
+		bodyIncl   string
+		token      string
+	}{
+		// Test without auth token
+		{`{"name":"test", "password":"test"}`, http.StatusUnauthorized, "Authorization header is missing", ""},
+		// Test with invalid auth token
+		{`{"name":"test", "password":"test"}`, http.StatusUnauthorized, "error", "invalid token"},
+		// Test as user, creating a non-admin user
+		{`{"name":"test-na-na", "password":"test", "isAdmin":false}`, http.StatusOK, `"isAdmin":false`, userToken},
+		// Test as user, creating an admin user
+		{`{"name":"test-na-a", "password":"test", "isAdmin":true}`, http.StatusOK, `"isAdmin":false`, userToken},
+		// Test as admin creating a non-admin user
+		{`{"name":"test-a-na", "password":"test", "isAdmin":false}`, http.StatusOK, `"isAdmin":false`, adminToken},
+		// // Test as admin creating an admin user
+		{`{"name":"test-a-a", "password":"test", "isAdmin":true}`, http.StatusOK, `"isAdmin":true`, adminToken},
+	}
+
+	for _, r := range requests {
+		// Create a request to pass to our handler.
+		req, err := http.NewRequest("POST", "/v1/user/", strings.NewReader(r.body))
+
+		if r.token != "" {
+			req.Header.Set("Authorization", "Bearer "+r.token)
+			t.Logf("Request with token : %v", r.token)
+		}
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		w := mockRequest(req)
+		checkResponse(t, w, r.wantedCode, r.bodyIncl)
+	}
+}
+
