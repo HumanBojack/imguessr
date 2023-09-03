@@ -1,9 +1,7 @@
 package test
 
 import (
-	"io"
 	"net/http"
-	"strings"
 	"testing"
 )
 
@@ -51,23 +49,6 @@ func TestGetUser(t *testing.T) {
 		}
 
 		w := mockRequest(req)
-
-		// Get the body
-		body, err := io.ReadAll(w.Body)
-		if err != nil {
-			t.Fatal(err)
-		}
-		bodyStr := string(body)
-
-		// Check the status code is what we expect.
-		if status := w.Code; status != r.wantedCode {
-			t.Errorf("handler returned wrong status code: got %v want %v. Body: %v",
-				status, r.wantedCode, bodyStr)
-		}
-
-		// Check that the body contains a token
-		if !strings.Contains(bodyStr, r.bodyIncl) {
-			t.Errorf("body doesn't contain '%v'. Body: %v", r.bodyIncl, bodyStr)
-		}
+		checkResponse(t, w, r.wantedCode, r.bodyIncl)
 	}
 }

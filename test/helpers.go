@@ -60,3 +60,24 @@ func getAndParseToken(t *testing.T, requestBdy string) string {
 
 	return token
 }
+
+// Performs the check on the request response
+func checkResponse(t *testing.T, w *httptest.ResponseRecorder, wantedCode int, bodyIncl string) {
+	// Get the body
+	body, err := io.ReadAll(w.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bodyStr := string(body)
+
+	// Check the status code is what we expect.
+	if status := w.Code; status != wantedCode {
+		t.Errorf("handler returned wrong status code: got %v want %v. Body: %v",
+			status, wantedCode, bodyStr)
+	}
+
+	// Check that the body contains a token
+	if !strings.Contains(bodyStr, bodyIncl) {
+		t.Errorf("body doesn't contain '%v'. Body: %v", bodyIncl, bodyStr)
+	}
+}
