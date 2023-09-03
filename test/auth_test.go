@@ -77,12 +77,12 @@ func TestLogin(t *testing.T) {
 		// Check the status code is what we expect.
 		if status := w.Code; status != r.wantedCode {
 			t.Errorf("handler returned wrong status code: got %v want %v. Body: %v",
-				status, http.StatusOK, bodyStr)
+				status, r.wantedCode, bodyStr)
 		}
 
 		// Check that the body contains a token
 		if !strings.Contains(bodyStr, r.bodyIncl) {
-			t.Errorf("body doesn't contain %v. Body: %v", r.bodyIncl, bodyStr)
+			t.Errorf("body doesn't contain '%v'. Body: %v", r.bodyIncl, bodyStr)
 		}
 	}
 }
