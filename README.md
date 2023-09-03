@@ -6,3 +6,11 @@ This project is made in go, following good practices in order for me to become m
 # .env
 The `.env` file is used to store environment variables. It is not versioned and should be created by the user. The following variables are required:
 - `JWT_SECRET`: The secret used to sign the JWT tokens
+
+# Tests
+Tests are run using the following command in the `test` folder:
+```bash
+go test
+```
+
+Go needs to be installed on the machine and the dependencies need to be installed using `go get`.
