@@ -11,11 +11,19 @@ type mockDB struct {
 
 var DB []*domain.User = []*domain.User{
 	{
-		ID: "1",
+		ID: "39c71853-6206-4eef-9f5b-7a1a90830ccc",
 		UpdateUser: domain.UpdateUser{
 			Name:     "testLogin",
 			Password: "$2y$10$Paa49WkbPM1mKL1Aoi30HuoDMPRxDOHjQZV0T4k5ItAKi5WPtintm",
 			IsAdmin:  false,
+		},
+	},
+	{
+		ID: "ec4e2897-4ca4-4694-94d7-96db81ec223f",
+		UpdateUser: domain.UpdateUser{
+			Name:     "testAdmin",
+			Password: "$2y$10$Paa49WkbPM1mKL1Aoi30HuoDMPRxDOHjQZV0T4k5ItAKi5WPtintm",
+			IsAdmin:  true,
 		},
 	},
 }

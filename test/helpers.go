@@ -3,8 +3,11 @@ package test
 import (
 	ihttp "imguessr/pkg/http"
 	"imguessr/pkg/service"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
+	"testing"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,4 +35,28 @@ func mockRequest(req *http.Request) *httptest.ResponseRecorder {
 	r.ServeHTTP(w, req)
 
 	return w
+}
+
+// Get the generated token from the response body
+func getAndParseToken(t *testing.T, requestBdy string) string {
+	req, err := http.NewRequest("POST", "/v1/auth/login",
+		strings.NewReader(requestBdy),
+	)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := mockRequest(req)
+	// Get the "token" from the body
+	body, err := io.ReadAll(w.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bodyStr := string(body)
+	token := strings.Split(bodyStr, ":")[1]
+	token = strings.ReplaceAll(token, "\"", "")
+	token = strings.ReplaceAll(token, "}", "")
+
+	return token
 }
