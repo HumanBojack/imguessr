@@ -26,6 +26,14 @@ var DB []*domain.User = []*domain.User{
 			IsAdmin:  true,
 		},
 	},
+	{
+		ID: "eee42492-e135-4c9a-89dc-923b9239b816",
+		UpdateUser: domain.UpdateUser{
+			Name:     "toDelete",
+			Password: "$2y$10$Paa49WkbPM1mKL1Aoi30HuoDMPRxDOHjQZV0T4k5ItAKi5WPtintm",
+			IsAdmin:  false,
+		},
+	},
 }
 
 // Mock the functions of the database interface

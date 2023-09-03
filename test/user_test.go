@@ -2,6 +2,7 @@ package test
 
 import (
 	"net/http"
+	"strings"
 	"testing"
 )
 
@@ -198,3 +199,53 @@ func TestUpdateUser(t *testing.T) {
 	}
 }
 
+// Test the DeleteUser function as an admin and non-admin
+// A non-admin can't delete other users
+func TestDeleteUser(t *testing.T) {
+	// Get the auth token for the user
+	userToken := getAndParseToken(t, `{"name":"testLogin","password":"test1"}`)
+	t.Logf("User token : %v", userToken)
+	// Get the auth token for the admin
+	adminToken := getAndParseToken(t, `{"name":"testAdmin","password":"test1"}`)
+	t.Logf("Admin token : %v", adminToken)
+
+	// Set the different requests to test
+	requests := []struct {
+		id         string
+		wantedCode int
+		bodyIncl   string
+		token      string
+	}{
+		// Test without auth token
+		{"39c71853-6206-4eef-9f5b-7a1a90830ccc", http.StatusUnauthorized, "Authorization header is missing", ""},
+		// Test with invalid auth token
+		{"39c71853-6206-4eef-9f5b-7a1a90830ccc", http.StatusUnauthorized, "error", "invalid token"},
+		// Test as user, deleting another user
+		{"ec4e2897-4ca4-4694-94d7-96db81ec223f", http.StatusUnauthorized, `Unauthorized`, userToken},
+		// Test as user, deleting itself
+		{"39c71853-6206-4eef-9f5b-7a1a90830ccc", http.StatusNoContent, "", userToken},
+		// Test as admin, deleting non existing user
+		{"39c71853-6206-4eef-9f5b-7a1a90830ccc", http.StatusNotFound, `can't find user`, adminToken},
+		// Test as admin, deleting another user
+		{"eee42492-e135-4c9a-89dc-923b9239b816", http.StatusNoContent, "", adminToken},
+		// Test as admin, deleting itself
+		{"ec4e2897-4ca4-4694-94d7-96db81ec223f", http.StatusNoContent, "", adminToken},
+	}
+
+	for _, r := range requests {
+		// Create a request to pass to our handler.
+		req, err := http.NewRequest("DELETE", "/v1/user/"+r.id, nil)
+
+		if r.token != "" {
+			req.Header.Set("Authorization", "Bearer "+r.token)
+			t.Logf("Request with token : %v", r.token)
+		}
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		w := mockRequest(req)
+		checkResponse(t, w, r.wantedCode, r.bodyIncl)
+	}
+}
