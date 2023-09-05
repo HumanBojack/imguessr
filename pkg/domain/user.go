@@ -13,19 +13,19 @@ type UpdateUser struct {
 }
 
 type UserDB interface {
-	GetAll() ([]*User, error)
-	Get(id string) (*User, error)
-	GetByName(name string) (*User, error)
-	Create(user *User) error
-	Update(u *User) error
-	Delete(id string) error
+	GetAllUsers() ([]*User, error)
+	GetUserByID(id string) (*User, error)
+	GetUserByName(name string) (*User, error)
+	CreateUser(user *User) error
+	UpdateUser(u *User) error
+	DeleteUser(id string) error
 }
 
 type UserSvc interface {
-	GetAll() ([]*User, error)
-	Get(id string) (*User, error)
-	GetByName(name string) (*User, error)
-	Create(user *User) error
-	Update(u *User) error
-	Delete(id string) error
+	GetAllUsers() ([]*User, error)
+	GetUserByID(id string) (*User, error)
+	GetUserByName(name string) (*User, error)
+	CreateUser(user *User) error
+	UpdateUser(u *User) error
+	DeleteUser(id string) error
 }

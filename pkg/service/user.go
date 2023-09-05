@@ -16,30 +16,30 @@ func NewUserSvc(db domain.UserDB) domain.UserSvc {
 	}
 }
 
-func (us userSvc) GetAll() ([]*domain.User, error) {
-	return us.DB.GetAll()
+func (us userSvc) GetAllUsers() ([]*domain.User, error) {
+	return us.DB.GetAllUsers()
 }
 
-func (us userSvc) Get(id string) (*domain.User, error) {
-	return us.DB.Get(id)
+func (us userSvc) GetUserByID(id string) (*domain.User, error) {
+	return us.DB.GetUserByID(id)
 }
 
-func (us userSvc) GetByName(name string) (*domain.User, error) {
-	return us.DB.GetByName(name)
+func (us userSvc) GetUserByName(name string) (*domain.User, error) {
+	return us.DB.GetUserByName(name)
 }
 
-func (us userSvc) Create(u *domain.User) error {
+func (us userSvc) CreateUser(u *domain.User) error {
 	u.ID = uuid.New().String()
-	return us.DB.Create(u)
+	return us.DB.CreateUser(u)
 }
 
-func (us userSvc) Update(u *domain.User) error {
+func (us userSvc) UpdateUser(u *domain.User) error {
 	// TODO: sanity check (email, password...)
-	err := us.DB.Update(u)
+	err := us.DB.UpdateUser(u)
 	return err
 }
 
-func (us userSvc) Delete(id string) error {
-	err := us.DB.Delete(id)
+func (us userSvc) DeleteUser(id string) error {
+	err := us.DB.DeleteUser(id)
 	return err
 }

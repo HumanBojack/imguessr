@@ -95,7 +95,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 
 	// Check if the user exists
-	user, err := h.UserSvc.GetByName(login.Name)
+	user, err := h.UserSvc.GetUserByName(login.Name)
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{

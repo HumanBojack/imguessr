@@ -37,11 +37,11 @@ var DB []*domain.User = []*domain.User{
 }
 
 // Mock the functions of the database interface
-func (mdb mockDB) GetAll() ([]*domain.User, error) {
+func (mdb mockDB) GetAllUsers() ([]*domain.User, error) {
 	return DB, nil
 }
 
-func (mdb mockDB) Get(id string) (*domain.User, error) {
+func (mdb mockDB) GetUserByID(id string) (*domain.User, error) {
 	// Find the user with the given ID
 	for _, user := range DB {
 		if user.ID == id {
@@ -52,7 +52,7 @@ func (mdb mockDB) Get(id string) (*domain.User, error) {
 	return nil, fmt.Errorf("can't find user with id : %v", id)
 }
 
-func (mdb mockDB) GetByName(name string) (*domain.User, error) {
+func (mdb mockDB) GetUserByName(name string) (*domain.User, error) {
 	// Find the user with the given name
 	for _, user := range DB {
 		if user.Name == name {
@@ -63,14 +63,14 @@ func (mdb mockDB) GetByName(name string) (*domain.User, error) {
 	return nil, fmt.Errorf("can't find user with name : %v", name)
 }
 
-func (mdb mockDB) Create(u *domain.User) error {
+func (mdb mockDB) CreateUser(u *domain.User) error {
 	// Add the user to the database
 	DB = append(DB, u)
 
 	return nil
 }
 
-func (mdb mockDB) Update(u *domain.User) error {
+func (mdb mockDB) UpdateUser(u *domain.User) error {
 	// Find the user with the given ID
 	for i, user := range DB {
 		if user.ID == u.ID {
@@ -83,7 +83,7 @@ func (mdb mockDB) Update(u *domain.User) error {
 	return fmt.Errorf("can't find user with id : %v", u.ID)
 }
 
-func (mdb mockDB) Delete(id string) error {
+func (mdb mockDB) DeleteUser(id string) error {
 	// Find the user with the given ID
 	for i, user := range DB {
 		if user.ID == id {

@@ -14,7 +14,7 @@ type UserHandler struct {
 }
 
 func (h *UserHandler) GetAll(c *gin.Context) {
-	userList, err := h.UserSvc.GetAll()
+	userList, err := h.UserSvc.GetAllUsers()
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -34,7 +34,7 @@ func (h *UserHandler) Get(c *gin.Context) {
 		return
 	}
 
-	user, err := h.UserSvc.Get(userId.String())
+	user, err := h.UserSvc.GetUserByID(userId.String())
 	if err != nil {
 		c.JSON(http.StatusNotFound, "Can't find user with this id")
 		return
@@ -72,7 +72,7 @@ func (h *UserHandler) Create(c *gin.Context) {
 
 	newUser.Password = string(hash)
 
-	err = h.UserSvc.Create(&newUser)
+	err = h.UserSvc.CreateUser(&newUser)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -104,7 +104,7 @@ func (h *UserHandler) Update(c *gin.Context) {
 		return
 	}
 
-	user, err := h.UserSvc.Get(userId.String())
+	user, err := h.UserSvc.GetUserByID(userId.String())
 	if err != nil {
 		c.JSON(http.StatusNotFound, "Can't find user with this id")
 		return
@@ -125,7 +125,7 @@ func (h *UserHandler) Update(c *gin.Context) {
 	}
 
 	// Save the modified user
-	err = h.UserSvc.Update(user)
+	err = h.UserSvc.UpdateUser(user)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -150,7 +150,7 @@ func (h *UserHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	err := h.UserSvc.Delete(id)
+	err := h.UserSvc.DeleteUser(id)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 			"error": err.Error(),
