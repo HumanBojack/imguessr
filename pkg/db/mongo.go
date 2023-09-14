@@ -13,6 +13,7 @@ import (
 type mongoStore struct {
 	Client         *mongo.Client
 	UserCollection *mongo.Collection
+	GameCollection *mongo.Collection
 }
 
 func NewMongoStore() (domain.AppDB, error) {
@@ -24,6 +25,7 @@ func NewMongoStore() (domain.AppDB, error) {
 	ms := mongoStore{
 		Client:         client,
 		UserCollection: client.Database("main").Collection("users"),
+		GameCollection: client.Database("main").Collection("games"),
 	}
 
 	// Create a unique index on the name field.

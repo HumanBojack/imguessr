@@ -7,9 +7,10 @@ import (
 type Handler struct {
 	UserHandler *UserHandler
 	AuthHandler *AuthHandler
+	GameHandler *GameHandler
 }
 
-func NewHandler(userSvc domain.UserSvc, authSvc domain.AuthSvc) *Handler {
+func NewHandler(userSvc domain.UserSvc, authSvc domain.AuthSvc, gameSvc domain.GameSvc) *Handler {
 	return &Handler{
 		UserHandler: &UserHandler{
 			UserSvc: userSvc,
@@ -17,6 +18,10 @@ func NewHandler(userSvc domain.UserSvc, authSvc domain.AuthSvc) *Handler {
 		AuthHandler: &AuthHandler{
 			UserSvc: userSvc,
 			AuthSvc: authSvc,
+		},
+		GameHandler: &GameHandler{
+			GameSvc: gameSvc,
+			UserSvc: userSvc,
 		},
 	}
 }

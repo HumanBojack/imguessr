@@ -20,8 +20,9 @@ func main() {
 
 	uSvc := service.NewUserSvc(db)
 	aSvc := service.NewAuthSvc()
+	gSvc := service.NewGameSvc(db)
 
-	h := ihttp.NewHandler(uSvc, aSvc)
+	h := ihttp.NewHandler(uSvc, aSvc, gSvc)
 
 	ihttp.GetRoutes(r, h)
 

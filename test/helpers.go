@@ -23,9 +23,10 @@ func mockRequest(req *http.Request) *httptest.ResponseRecorder {
 	// Create Services
 	uSvc := service.NewUserSvc(db)
 	aSvc := service.NewAuthSvc()
+	gSvc := service.NewGameSvc(db)
 
 	// Create a handler and add the routes
-	h := ihttp.NewHandler(uSvc, aSvc)
+	h := ihttp.NewHandler(uSvc, aSvc, gSvc)
 	ihttp.GetRoutes(r, h)
 
 	// Create a response recorder so you can inspect the response
