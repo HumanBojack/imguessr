@@ -16,7 +16,9 @@ type GameParameters struct {
 }
 
 type GameDB interface {
+	CreateGame(game *Game) error
 }
 
 type GameSvc interface {
+	CreateGame(game *Game) error
 }

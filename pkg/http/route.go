@@ -6,6 +6,7 @@ func GetRoutes(r *gin.Engine, h *Handler) {
 	v1 := r.Group("/v1")
 	addUserRoutes(v1, h)
 	addAuthRoutes(v1, h)
+	addGameRoutes(v1, h)
 }
 
 func addUserRoutes(rg *gin.RouterGroup, h *Handler) {
@@ -24,4 +25,11 @@ func addAuthRoutes(rg *gin.RouterGroup, h *Handler) {
 
 	auth.POST("/login", h.AuthHandler.Login)
 	auth.POST("/register", h.UserHandler.Create)
+}
+
+func addGameRoutes(rg *gin.RouterGroup, h *Handler) {
+	game := rg.Group("/game")
+	game.Use(authMiddleware())
+
+	game.POST("/", h.GameHandler.Create)
 }
