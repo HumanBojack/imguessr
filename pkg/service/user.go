@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"imguessr/pkg/domain"
 
 	"github.com/google/uuid"
@@ -42,4 +43,22 @@ func (us userSvc) UpdateUser(u *domain.User) error {
 func (us userSvc) DeleteUser(id string) error {
 	err := us.DB.DeleteUser(id)
 	return err
+}
+
+// Verify that the UserIDs slice is not empty and that all the IDs are valid
+func (us userSvc) VerifyUsersIDs(usersIDs []string) error {
+	// Check if the UsersIDs slice is empty
+	if len(usersIDs) == 0 {
+		return fmt.Errorf("no users provided")
+	}
+
+	// Verify that game.UsersIDs values are real users
+	for _, userID := range usersIDs {
+		_, err := us.GetUserByID(userID)
+		if err != nil {
+			return fmt.Errorf("user with ID '%v' does not seem exist : %v", userID, err.Error())
+		}
+	}
+
+	return nil
 }

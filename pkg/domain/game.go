@@ -21,4 +21,8 @@ type GameDB interface {
 
 type GameSvc interface {
 	CreateGame(game *Game) error
+	VerifyFrequency(frequency int) error
+	VerifySteps(steps int) error
+	VerifyHiderType(hiderType string) error
+	VerifyImage(image []byte) error
 }

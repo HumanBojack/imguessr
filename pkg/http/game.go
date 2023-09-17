@@ -51,24 +51,41 @@ func (h *GameHandler) Create(c *gin.Context) {
 		}
 	}
 
-	// Check if the UsersIDs slice is empty
-	if len(game.UsersIDs) == 0 {
+	// Verify the game parameters
+	err = h.UserSvc.VerifyUsersIDs(game.UsersIDs)
+	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": "No users provided",
+			"error": err,
 		})
 		return
 	}
-
-	// Verify that game.UsersIDs values are real users
-	for _, userID := range game.UsersIDs {
-		_, err := h.UserSvc.GetUserByID(userID)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-				// Format the error to incude the userID
-				"error": "User with ID '" + userID + "' does not seem exist : " + err.Error(),
-			})
-			return
-		}
+	err = h.GameSvc.VerifyFrequency(game.Frequency)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+	err = h.GameSvc.VerifySteps(game.Steps)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+	err = h.GameSvc.VerifyHiderType(game.HiderType)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+	err = h.GameSvc.VerifyImage(game.Image)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
 	}
 
 	// Create the game

@@ -28,4 +28,5 @@ type UserSvc interface {
 	CreateUser(user *User) error
 	UpdateUser(u *User) error
 	DeleteUser(id string) error
+	VerifyUsersIDs(usersIDs []string) error
 }
