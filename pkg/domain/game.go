@@ -16,10 +16,14 @@ type GameParameters struct {
 }
 
 type GameDB interface {
+	GetAllGames() ([]*Game, error)
+	GetAllGamesByUserID(userType string, userID string) ([]*Game, error)
 	CreateGame(game *Game) error
 }
 
 type GameSvc interface {
+	GetAllGames() ([]*Game, error)
+	GetAllGamesByUserID(userType string, userID string) ([]*Game, error)
 	CreateGame(game *Game) error
 	VerifyFrequency(frequency int) error
 	VerifySteps(steps int) error

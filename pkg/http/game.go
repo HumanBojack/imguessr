@@ -12,6 +12,39 @@ type GameHandler struct {
 	UserSvc domain.UserSvc
 }
 
+func (h *GameHandler) GetAll(c *gin.Context) {
+	// userType defines which games to return
+	userType := c.Query("userType")
+
+	// Check the userID query parameter based on the user role
+	var userID string
+	if ok, _ := c.Get("isAdmin"); ok == true {
+		userID = c.Query("userID")
+	} else {
+		if id, ok := c.Get("userID"); ok {
+			if strID, ok := id.(string); ok {
+				userID = strID
+			}
+		}
+	}
+
+	// Get the games
+	var games []*domain.Game
+	var err error
+	if userID == "" {
+		games, err = h.GameSvc.GetAllGames()
+	} else {
+		games, err = h.GameSvc.GetAllGamesByUserID(userType, userID)
+	}
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, games)
+}
+
 func (h *GameHandler) Create(c *gin.Context) {
 	// Bind the JSON body to the GameParameters struct
 	var game domain.Game

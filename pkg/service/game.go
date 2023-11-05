@@ -23,6 +23,14 @@ func NewGameSvc(db domain.GameDB) domain.GameSvc {
 	}
 }
 
+func (gs gameSvc) GetAllGames() ([]*domain.Game, error) {
+	return gs.DB.GetAllGames()
+}
+
+func (gs gameSvc) GetAllGamesByUserID(userType string, userID string) ([]*domain.Game, error) {
+	return gs.DB.GetAllGamesByUserID(userType, userID)
+}
+
 func (gs gameSvc) CreateGame(g *domain.Game) error {
 	g.ID = uuid.New().String()
 	g.DateTime = time.Now().UTC().Unix()

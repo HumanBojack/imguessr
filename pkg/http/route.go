@@ -32,4 +32,5 @@ func addGameRoutes(rg *gin.RouterGroup, h *Handler) {
 	game.Use(authMiddleware())
 
 	game.POST("/", h.GameHandler.Create)
+	game.GET("/", h.GameHandler.GetAll)
 }
