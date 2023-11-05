@@ -55,35 +55,35 @@ func (h *GameHandler) Create(c *gin.Context) {
 	err = h.UserSvc.VerifyUsersIDs(game.UsersIDs)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 	err = h.GameSvc.VerifyFrequency(game.Frequency)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 	err = h.GameSvc.VerifySteps(game.Steps)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 	err = h.GameSvc.VerifyHiderType(game.HiderType)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 	err = h.GameSvc.VerifyImage(game.Image)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
