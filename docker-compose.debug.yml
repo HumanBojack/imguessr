@@ -1,12 +1,19 @@
 services:
   api:
     build:
-        dockerfile: Dockerfile_dev
+        dockerfile: Dockerfile.dev
+    develop:
+      watch:
+        - action: rebuild
+          path: .
     volumes:
-      - "${PWD}:/app"
+      - cache:/root/.cache/go-build
     command: >
       sh -c "
       go install github.com/go-delve/delve/cmd/dlv@latest &&
       dlv debug /app/cmd/api --headless --listen=:2345 --api-version=2 --log"
     ports:
       - 2345:2345
+
+volumes:
+  cache:
