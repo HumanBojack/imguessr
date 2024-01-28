@@ -1,7 +1,13 @@
 services:
   api:
     build:
-        dockerfile: Dockerfile_dev
+        dockerfile: Dockerfile.dev
+    develop:
+      watch:
+        - action: rebuild
+          path: .
     volumes:
-      - "${PWD}:/app"
-    command: "air -c air.toml"
+      - cache:/root/.cache/go-build
+
+volumes:
+  cache:
